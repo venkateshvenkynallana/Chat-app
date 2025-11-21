@@ -81,7 +81,7 @@ const LoginPage = () => {
           ) : (
             <p className='text-sm text-gray-600'>Create an account
               <span onClick={()=>setCurrentState("Sign up")}
-              className='font-medium text-violet-500 cursor-pointer '> Click here</span>
+              className='font-medium text-violet-500 cursor-pointer'> Click here</span>
             </p>
           )}
         </div>
