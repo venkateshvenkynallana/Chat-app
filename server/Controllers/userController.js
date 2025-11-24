@@ -1,6 +1,7 @@
 import cloudinary from "../lib/cloudinary.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.js";
+import bcrypt from "bcryptjs";
 
 //sign up form
 
@@ -8,7 +9,7 @@ export const signUp = async (req, res) => {
 
     const { fullName, email, password, bio } = req.body;
     try {
-        if (!fullName || !email || password || bio) {
+        if (!fullName || !email || !password || !bio) {
             return res.status(400).json({ message: "fields are missing!" })
         }
 
@@ -39,7 +40,7 @@ export const signUp = async (req, res) => {
 }
 
 //Controller to login a user
-export const Login = async () => {
+export const Login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
