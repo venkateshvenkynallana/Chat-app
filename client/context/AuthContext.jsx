@@ -10,7 +10,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
 
-    const [token, getToken] = useState(localStorage.getItem("token"));
+    const [token, setToken] = useState(localStorage.getItem("token"));
     const [authUser, setAuthUser] = useState(null);
     const [socket, setSocket] = useState(null);
     const [onlineUser, setOnlineUser] = useState([]);
@@ -36,8 +36,8 @@ export const AuthProvider = ({ children }) => {
             if (data.success) {
                 setAuthUser(data.userData);
                 connectSocket(data.userData);
-                axios.defaults.headers.common["token"] = data.token;
                 setToken(data.token);
+                axios.defaults.headers.common["token"] = data.token;
                 localStorage.setItem("token", data.token);
                 toast.success(data.message);
             } else {
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     //Logout function to handle user logout and socketdisconnection
-    const logout = async()=>{
+    const logout = async () => {
         localStorage.removeItem("token");
         setToken(null);
         setAuthUser(null);
@@ -57,6 +57,19 @@ export const AuthProvider = ({ children }) => {
         axios.defaults.headers.common["token"] = null;
         toast.success("Logged out successfully.");
         socket.disconnect();
+    }
+
+    //Update profile function to handle user profile updates
+    const updateProfile = async (body) => {
+        try {
+            const { data } = await axios.put("/api/auth/update-profile", body);
+            if (data.success) {
+                setAuthUser(data.user);
+                toast.success("Profile Updated successfully")
+            }
+        } catch (error) {
+            toast.error(error.message);
+        }
     }
 
     //Connect socket function to handle socket connection and online users updates
@@ -77,17 +90,24 @@ export const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        if (token) {
-            axios.defaults.headers.common["token"] = token;
+        const localToken = localStorage.getItem("token");
+        const activeToken = token || localToken;
+
+        if (activeToken) {
+            axios.defaults.headers.common["token"] = activeToken;
+            if (!token) setToken(activeToken);
+            checkAuth();
         }
-        checkAuth()
     }, [])
 
     const value = {
         token,
         authUser,
         socket,
-        onlineUser
+        onlineUser,
+        login,
+        logout,
+        updateProfile
     }
 
     return (
