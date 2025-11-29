@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import axios from 'axios';
 import toast from "react-hot-toast";
 import { io } from "socket.io-client"
+import { useNavigate } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.baseURL = backendUrl;
@@ -14,6 +15,7 @@ export const AuthProvider = ({ children }) => {
     const [authUser, setAuthUser] = useState(null);
     const [socket, setSocket] = useState(null);
     const [onlineUser, setOnlineUser] = useState([]);
+
 
     //Check if user is authenticated and if so , set the user data and connect the socket
     const checkAuth = async () => {
@@ -39,7 +41,8 @@ export const AuthProvider = ({ children }) => {
                 setToken(data.token);
                 axios.defaults.headers.common["token"] = data.token;
                 localStorage.setItem("token", data.token);
-                toast.success(data.message);
+                toast("Account created successfully.");
+
             } else {
                 toast.error(data.message);
             }
