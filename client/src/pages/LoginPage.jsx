@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import assets from '../assets/assets'
 import { AuthContext } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
 
@@ -14,6 +15,8 @@ const LoginPage = () => {
 
   const { login } = useContext(AuthContext);
 
+  const navigate = useNavigate();
+
   const onSubmitHandler = (event) =>{
     event.preventDefault();
 
@@ -23,6 +26,7 @@ const LoginPage = () => {
     }
     login(currState === "Sign up" ? 'signup' : 'login', {fullName, email, password, bio})
     
+    navigate('/');
   }
 
   return (

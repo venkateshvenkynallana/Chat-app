@@ -18,7 +18,7 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
                     border-gray-500 text-gray-100 hidden group-hover:block'>
                             <p onClick={() => navigate('/profile')} className='cursor-pointer text-sm'>Edit Profile</p>
                             <hr className='my-2 border-t border-gray-500' />
-                            <p className='cursor-pointer text-sm'>Logout</p>
+                            <p onClick={() => navigate('/login')} className='cursor-pointer text-sm'>Logout</p>
                         </div>
                     </div>
                 </div>
