@@ -1,9 +1,20 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import assets, { imagesDummyData } from '../assets/assets'
+import { AuthContext } from '../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const RightSidebar = ({ selectedUser }) => {
+
+  const navigate = useNavigate();
+  const {logout} = useContext(AuthContext);
+
+  const handleLogout=()=>{
+    logout();
+
+    navigate('/login');
+  }
   return selectedUser && (
-    <div className={`bg-[#8185B2]/10 w-full relative  rounded-l-xl overflow-y-scroll text-white
+    <div className={`bg-[#8185B2]/10 w-full relative  rounded-l-xl overflow-y-auto text-white
     ${selectedUser ? 'max-md:hidden' : ''}`}>
 
       <div className='pt-8 flex flex-col items-center gap-2 text-xs font-light mx-auto'>
@@ -20,7 +31,7 @@ const RightSidebar = ({ selectedUser }) => {
 
       <div className='px-5 text-xs'>
         <p>Media</p>
-        <div className='mt-2 max-h-[200px] overflow-y-scroll grid grid-cols-2 gap-2 opacity-80'>
+        <div className='mt-2 max-h-[200px] overflow-y-auto grid grid-cols-2 gap-2 opacity-80'>
           {imagesDummyData.map((url, index) => (
             <div key={index} onClick={() => window.open(url)}
               className='cursor-pointer rounded'>
@@ -31,7 +42,8 @@ const RightSidebar = ({ selectedUser }) => {
       </div>
 
       <button className='absolute bottom-0 left-5 flex items-center gap-3 p-3 transform -tracking-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 
-      text-white border-none text-sm font-light py-2 px-20 rounded-full cusrsor-pointer'>
+      text-white border-none text-sm font-light py-2 px-20 rounded-full cusrsor-pointer'
+      onClick={handleLogout}>
         Logout
       </button>
     </div>

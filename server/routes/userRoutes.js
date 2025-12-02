@@ -6,7 +6,7 @@ const userRouter = express.Router();
 
 userRouter.post('/signup', signUp);
 userRouter.post('/login', Login);
-userRouter.put('/update-profile',  updateProfile);
+userRouter.put('/update-profile',protectRoute, updateProfile);
 
 
 userRouter.get('/check', protectRoute, checkAuth);
