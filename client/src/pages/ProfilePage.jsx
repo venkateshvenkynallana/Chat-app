@@ -5,12 +5,13 @@ import { AuthContext } from '../context/AuthContext';
 
 const ProfilePage = () => {
 
+  const { authUser, updateProfile } = useContext(AuthContext);
+
   const navigate = useNavigate();
   const [selectedImg, setSelectedImg] = useState(null);
-  const [name, setName] = useState("Martin Johnson");
-  const [bio, setBio] = useState("Hi Everyone, I am using QuickChat");
+  const [name, setName] = useState(authUser?.fullName || "");
+  const [bio, setBio] = useState(authUser?.bio || "");
 
-  const { authUser, updateProfile } = useContext(AuthContext);
   console.log("file", selectedImg);
   const handleSubmit = async(e)=>{
     e.preventDefault();
@@ -57,8 +58,9 @@ const ProfilePage = () => {
             Save
           </button>
         </form>
-        <img className='max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10'
-        src={assets.logo_icon} alt="" />
+        <img className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10
+        ${selectedImg && 'rounded-full'}`}
+        src={authUser?.profilePic || assets.logo_icon} alt="" />
       </div>
     </div>
   )
