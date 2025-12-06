@@ -31,7 +31,7 @@ export const signUp = async (req, res) => {
 
         const token = generateToken(newUser._id);
 
-        res.status(200).json({ userData: newUser, token, message: "Account created successfully." })
+        res.status(200).json({ success: true, userData: newUser, token, message: "Account created successfully." })
 
     } catch (error) {
         console.log("error msg", error.message);
@@ -54,7 +54,7 @@ export const Login = async (req, res) => {
 
         const token = generateToken(userData._id);
 
-        res.status(200).json({ userData, token, message: "Login successful" })
+        res.status(200).json({ success: true, userData, token, message: "Login successful" })
     } catch (error) {
         console.log("error msg", error.message);
         res.status(404).json({ message: error.message });
@@ -63,7 +63,7 @@ export const Login = async (req, res) => {
 
 //controller to check if user is authenticated
 export const checkAuth = (req, res) => {
-    res.status(200).json({ user: req.user })
+    res.status(200).json({ success: true, user: req.user })
 }
 
 //Controller to update user profile details
@@ -86,7 +86,7 @@ export const updateProfile = async (req, res) => {
                 bio
             }, { new: true })
         }
-        res.status(200).json({user: updatedUser},"Updated Successful.");
+        res.status(200).json({ success: true, user: updatedUser, message: "Updated Successful." });
     } catch (error) {
         console.log("error msg", error.message);
         res.status(404).json({ message: error.message });

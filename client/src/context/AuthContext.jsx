@@ -20,13 +20,21 @@ export const AuthProvider = ({ children }) => {
     //Check if user is authenticated and if so , set the user data and connect the socket
     const checkAuth = async () => {
         try {
-            const { data } = await axios.get("/api/auth/check");
+            const token = localStorage.getItem("token");
+            if (!token) return;
+
+            const { data } = await axios.get("/api/auth/check", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
             if (data.success) {
                 setAuthUser(data.user);
                 connectSocket(data.user);
             }
         } catch (error) {
+            console.error("checkAuth error:", error.response?.data || error.message);
             toast.error(error.message);
         }
     }
@@ -39,9 +47,9 @@ export const AuthProvider = ({ children }) => {
                 setAuthUser(data.userData);
                 connectSocket(data.userData);
                 setToken(data.token);
-                axios.defaults.headers.common["token"] = data.token;
+                axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
                 localStorage.setItem("token", data.token);
-                toast("Account created successfully.");
+                toast.success("Login successful.");
 
             } else {
                 toast.error(data.message);
@@ -57,7 +65,7 @@ export const AuthProvider = ({ children }) => {
         setToken(null);
         setAuthUser(null);
         setOnlineUser([]);
-        axios.defaults.headers.common["token"] = null;
+        axios.defaults.headers.common["Authorization"] = null;
         toast.success("Logged out successfully.");
         socket.disconnect();
     }
@@ -93,15 +101,17 @@ export const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        const localToken = localStorage.getItem("token");
-        const activeToken = token || localToken;
+        const initAuth = async () => {
+            const localToken = localStorage.getItem("token");
+            if (localToken) {
+                setToken(localToken); // Just set state
+                checkAuth(); // New checkAuth handles header
+            }
+        };
+        initAuth();
+    }, []);
 
-        if (activeToken) {
-            axios.defaults.headers.common["token"] = activeToken;
-            if (!token) setToken(activeToken);
-            checkAuth();
-        }
-    }, [])
+
 
     const value = {
         token,
