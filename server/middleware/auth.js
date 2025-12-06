@@ -4,14 +4,15 @@ import User from "../models/user.js";
 //verify route
 export const protectRoute = async (req, res, next) => {
     try {
-        const token = req.header('token') || req.headers['token'] || req.header('authorization');
+        const authHeader = req.headers.authorization;
+        console.log("header :-", authHeader)
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "Token not provided" });
+        }
 
-        if (!token) return res.status(401).json({ message: 'Token not provided' });
-
-        // support `Authorization: Bearer <token>` as well as a raw `token` header
-        const rawToken = token.startsWith('Bearer ') ? token.split(' ')[1] : token;
-
-        const decode = jwt.verify(rawToken, process.env.JWT_SECRET);
+        const token = authHeader.split(" ")[1];
+        console.log("token :-", token)
+        const decode = jwt.verify(token, process.env.JWT_SECRET);
 
         const user = await User.findById(decode.userId).select("-password");
 
