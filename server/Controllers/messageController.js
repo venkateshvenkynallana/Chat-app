@@ -42,11 +42,10 @@ export const getMessages = async (req, res) => {
         const messages = await Message.find({
             $or: [
                 { senderId: myId, receiverId: selectedUserId },
-                { receiverId: selectedUserId, receiverId: myId }
+                { senderId: selectedUserId, receiverId: myId }
             ]
         })
-        await Message.updateMany({ senderId: selectedUserId, receiverId: myId }),
-            { seen: true };
+        await Message.updateMany({ senderId: selectedUserId, receiverId: myId }, { seen: true });
 
         res.status(200).json({ messages })
     } catch (error) {

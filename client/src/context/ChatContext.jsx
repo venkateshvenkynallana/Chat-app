@@ -44,10 +44,19 @@ export const ChatProvider = ({ children }) => {
     //function to get messages for selected user
     const getMessages = async (userId) => {
         try {
-            const { data } = await axios.get(`/api/messages/${userId}`);
 
-            if (data.success) {
-                setMessage(data.message)
+            const token = localStorage.getItem("token");
+            const res = await axios.get(
+                `http://localhost:5000/api/messages/${selectedUserId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                }
+            );
+
+            if (res.data && res.data.messages) {
+                setMessage(res.data.messages);
             }
         } catch (error) {
             toast.error(error.message)
@@ -57,9 +66,15 @@ export const ChatProvider = ({ children }) => {
     // function to send message selected user
     const sendMessage = async (messageData) => {
         try {
-            const { data } = await axios.post(`/api/messages/send/${selectedUser._id}`, messageData);
+            const { data } = await axios.post(`/api/messages/send/${selectedUser._id}`, 
+                messageData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
-            if (data.success) {
+            if (data.newMessage) {
                 setMessage((prevMessages) => [...prevMessages, data.newMessage])
             } else {
                 toast.error(data.message);
