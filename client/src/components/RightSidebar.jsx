@@ -1,18 +1,29 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import assets, { imagesDummyData } from '../assets/assets'
 import { AuthContext } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import { ChatContext } from '../context/ChatContext'
 
-const RightSidebar = ({ selectedUser }) => {
+const RightSidebar = () => {
 
   const navigate = useNavigate();
-  const {logout} = useContext(AuthContext);
 
-  const handleLogout=()=>{
+  const { message, selectedUser } = useContext(ChatContext);
+  const { logout, onlineUser } = useContext(AuthContext);
+
+  const [msgImage, setMsgImage] = useState('');
+
+  useEffect(()=>{
+    setMsgImage(
+      message.filter(msg=>msg.image).map(msg => msg.image)
+    )
+  },[message]);
+
+  const handleLogout = () => {
     logout();
-
     navigate('/login');
   }
+
   return selectedUser && (
     <div className={`bg-[#8185B2]/10 w-full relative  rounded-l-xl overflow-y-auto text-white
     ${selectedUser ? 'max-md:hidden' : ''}`}>
@@ -21,7 +32,7 @@ const RightSidebar = ({ selectedUser }) => {
         <img src={selectedUser?.profilePic || assets.avatar_icon} alt=""
           className='w-20 aspect-[1/1] rounded-full' />
         <h1 className='px-10 text-xl font-medium mx-auto flex items-center gap-2'>
-          <p className='w-2 h-2 rounded-full bg-green-500'></p>
+          {onlineUser.includes(selectedUser._id) && <p className='w-2 h-2 rounded-full bg-green-500'></p>}
           {selectedUser.fullName}
         </h1>
         <p className='px-10 mx-auto'>{selectedUser.bio}</p>
@@ -32,7 +43,7 @@ const RightSidebar = ({ selectedUser }) => {
       <div className='px-5 text-xs'>
         <p>Media</p>
         <div className='mt-2 max-h-[200px] overflow-y-auto grid grid-cols-2 gap-2 opacity-80'>
-          {imagesDummyData.map((url, index) => (
+          {msgImage.map((url, index) => (
             <div key={index} onClick={() => window.open(url)}
               className='cursor-pointer rounded'>
               <img src={url} alt="" className='h-full rounded-md' />
@@ -43,7 +54,7 @@ const RightSidebar = ({ selectedUser }) => {
 
       <button className='absolute bottom-0 left-5 flex items-center gap-3 p-3 transform -tracking-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 
       text-white border-none text-sm font-light py-2 px-20 rounded-full cusrsor-pointer'
-      onClick={handleLogout}>
+        onClick={handleLogout}>
         Logout
       </button>
     </div>

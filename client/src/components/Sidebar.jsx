@@ -31,6 +31,11 @@ const Sidebar = () => {
         if (token) getUser();
     }, [token])
 
+    const handleLogout = () => {
+        logout();
+        navigate('/login')
+    }
+
     return (
         <div className={`bg-[#8185B2]/10 h-full p-5 rounded-r-xl overflow-y-scroll text-white 
     ${selectedUser ? 'max-md:hidden' : ''}`}>
@@ -43,7 +48,7 @@ const Sidebar = () => {
                         border-gray-500 text-gray-100 hidden group-hover:block'>
                             <p onClick={() => navigate('/profile')} className='cursor-pointer text-sm'>Edit Profile</p>
                             <hr className='my-2 border-t border-gray-500' />
-                            <p onClick={() => logout()} className='cursor-pointer text-sm'>Logout</p>
+                            <p onClick={handleLogout} className='cursor-pointer text-sm'>Logout</p>
                         </div>
                     </div>
                 </div>
@@ -59,7 +64,10 @@ const Sidebar = () => {
 
             <div className='flex flex-col'>
                 {filterUser.map((user, index) => (
-                    <div onClick={() => setSelectedUser(user)} key={index}
+                    <div onClick={() => {
+                        setSelectedUser(user); setUnseenMessages(prev =>
+                            ({ ...prev, [user._id]: 0 }))
+                    }} key={index}
                         className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm 
                 ${selectedUser?._id === user._id && 'bg-[#282142]/50'}`}>
                         <img src={user?.profilePic || assets.avatar_icon} alt=""

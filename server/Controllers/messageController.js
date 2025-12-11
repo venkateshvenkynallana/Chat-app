@@ -76,7 +76,11 @@ export const sendMessage = async (req, res) => {
 
         let imageUrl;
         if (image) {
-            const uploadResponse = await cloudinary.uploader.upload(image);
+            const base64 = image.replace(/^data:image\/\w+;base64,/, "");
+            const uploadResponse = await cloudinary.uploader.upload
+                (
+                    `data:image/png;base64,${base64}`
+                );
             imageUrl = uploadResponse.secure_url;
         }
 
@@ -96,7 +100,7 @@ export const sendMessage = async (req, res) => {
         res.status(200).json({ newMessage });
 
     } catch (error) {
-        console.log("error msg :-sending msg");
+        console.log("error msg :-sending msg", error);
         res.status(404).json({ message: error.message });
     }
 }
