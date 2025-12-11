@@ -47,7 +47,7 @@ export const ChatProvider = ({ children }) => {
 
             const token = localStorage.getItem("token");
             const res = await axios.get(
-                `http://localhost:5000/api/messages/${selectedUserId}`,
+                `http://localhost:5000/api/messages/${userId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`

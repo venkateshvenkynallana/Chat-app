@@ -7,7 +7,13 @@ import toast from 'react-hot-toast';
 
 const ChatContainer = () => {
 
-    const { selectedUser, setSelectedUser, message, sendMessage, getMessages } = useContext(ChatContext);
+    const {
+        selectedUser,
+        setSelectedUser,
+        message,
+        sendMessage,
+        getMessages
+    } = useContext(ChatContext);
     const { authUser, onlineUser } = useContext(AuthContext);
 
     const scrollEnd = useRef();
@@ -53,12 +59,13 @@ const ChatContainer = () => {
 
     return selectedUser ? (
         <div className='h-full overflow-scroll relative backdrop-blur-lg '>
+
             {/*-------Header------*/}
             <div className='flex items-center gap-3 py-3 mx-4 border-b border-stone-500 '>
                 <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-8 rounded-full' />
                 <p className='flex-1 text-lg text-white flex items-center gap-2'>
                     {selectedUser.fullName}
-                    {onlineUser.includes(selectedUser._id)}<span className='w-2 h-2 rounded-full bg-green-500'></span>
+                    {onlineUser.includes(selectedUser._id) && <span className='w-2 h-2 rounded-full bg-green-500'></span>}
                 </p>
                 <img onClick={() => setSelectedUser(null)} src={assets.arrow_icon} alt=""
                     className='md:hidden max-w-7' />
@@ -69,13 +76,13 @@ const ChatContainer = () => {
             <div className='flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6'>
                 {message.map((msg, index) => (
                     <div key={index} className={`flex items-end gap-2 justify-end 
-                ${msg.senderId !== authUser._id && 'flex-row-reverse'}`}>
+                    ${msg.senderId !== authUser._id && 'flex-row-reverse'}`}>
                         {msg.image ? (
                             <img src={msg.image} alt="" className='max-w-[230px] border border-gray-700
-                        rounded-lg overflow-hidden mb-8'/>
+                            rounded-lg overflow-hidden mb-8'/>
                         ) : (
                             <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500/30 text-white 
-                            ${msg.senderId === authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>
+                                ${msg.senderId === authUser._id ? 'rounded-br-none' : 'rounded-bl-none'}`}>
                                 {msg.text}
                             </p>
                         )}
@@ -103,7 +110,7 @@ const ChatContainer = () => {
                     </label>
                 </div>
                 <img onClick={handleSendMessage}
-                src={assets.send_button} alt="" className='w-7 cursor-pointer' />
+                    src={assets.send_button} alt="" className='w-7 cursor-pointer' />
             </div>
 
         </div>
